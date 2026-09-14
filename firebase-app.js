@@ -13,7 +13,7 @@ import { firebaseConfig } from "./firebase-config.js";
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-await setPersistence(auth, browserLocalPersistence);
+setPersistence(auth, browserLocalPersistence).catch(console.warn);
 
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: "select_account" });

@@ -19,15 +19,25 @@
 
       <div class="account-area">
 
-        <span class="status ok">
-          Budget Dashboard
-        </span>
+  <span id="status" class="status">
+    Signed out
+  </span>
 
-        <button id="profileBtn" class="secondary" type="button">
-          Profile
-        </button>
+  <span id="userEmail" class="user-email"></span>
 
-      </div>
+  <button id="googleSignInBtn" class="secondary" type="button">
+    Sign in with Google
+  </button>
+
+  <button id="logoutBtn" class="secondary" type="button" hidden>
+    Logout
+  </button>
+
+  <button id="profileBtn" class="secondary" type="button">
+    Profile
+  </button>
+
+</div>
 
       <!-- 3D DASHBOARD CHARACTER -->
       <div class="dashboard-character">
@@ -298,7 +308,7 @@
     </main>
   </div>
 
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 
 </html>
