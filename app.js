@@ -112,7 +112,6 @@ async function addTransaction(e) {
   e.target.reset(); $("date").value = today();
 }
 async function removeTransaction(id) {
-
   if (!user || !id || !confirm("Delete this transaction?")) return;
 
   try {
@@ -123,15 +122,10 @@ async function removeTransaction(id) {
     console.error("Delete transaction error:", error);
     alert("Could not delete the transaction: " + error.message);
   }
-
-  if (!user || !confirm("Delete this transaction?")) return;
-  await deleteDoc(doc(db, "users", user.uid, "transactions", id));
-
 }
 async function start() {
   if ($("date")) $("date").value = today();
   $("form")?.addEventListener("submit", addTransaction);
-
   document.addEventListener("click", e => {
   const b = e.target.closest("[data-delete-id]");
 
@@ -142,11 +136,6 @@ async function start() {
 
   removeTransaction(b.dataset.deleteId);
 });
-
-  $("rows")?.addEventListener("click", e => {
-    const b = e.target.closest("[data-delete-id]"); if (b) removeTransaction(b.dataset.deleteId);
-  });
-
   $("refreshFundsBtn")?.addEventListener("click", renderFunds);
   $("editOtherNameBtn")?.addEventListener("click", () => {
     const n = prompt("Enter a name for this account:", otherName());
