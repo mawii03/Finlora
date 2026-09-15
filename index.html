@@ -47,24 +47,171 @@
       </div>
     </div>
 
-    <div id="profileModal" class="modal hidden" role="dialog" aria-modal="true">
-      <div class="modal-card">
-        <div class="modal-header">
-          <div>
-            <h2>Profile Preview</h2>
-            <p class="modal-subtitle">Local profile settings</p>
-          </div>
-          <button id="closeProfileBtn" class="modal-close" type="button">×</button>
-        </div>
-        <label for="profileName">Name</label>
-        <input id="profileName" type="text" value="Demo User">
-        <div class="profile-actions">
-          <button id="saveProfileBtn" type="button">Save preview</button>
-          <button id="cancelProfileBtn" class="secondary" type="button">Cancel</button>
-        </div>
-        <div id="profileMessage" class="auth-message"></div>
+    <!-- PROFILE MODAL -->
+<div id="profileModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-card profile-modal-card">
+
+    <div class="modal-header">
+      <div>
+        <h2>👤 My Profile</h2>
+        <p class="modal-subtitle">
+          Manage your account information
+        </p>
       </div>
+
+      <button
+        id="closeProfileBtn"
+        class="modal-close"
+        type="button"
+        aria-label="Close profile">
+        ×
+      </button>
     </div>
+
+    <!-- PROFILE PHOTO -->
+    <div class="profile-photo-section">
+
+      <img
+        id="profilePhoto"
+        class="profile-photo"
+        src=""
+        alt="Profile photo">
+
+      <div class="profile-photo-info">
+        <strong id="profileDisplayName">User</strong>
+        <span id="profileProvider">Google Account</span>
+      </div>
+
+    </div>
+
+    <!-- PROFILE INFORMATION -->
+    <div class="profile-fields">
+
+      <div class="profile-field">
+        <label for="profileName">
+          📝 Full Name
+        </label>
+
+        <input
+          id="profileName"
+          type="text"
+          placeholder="Enter your full name"
+          disabled>
+      </div>
+
+      <div class="profile-field">
+        <label for="profileUsername">
+          👤 Username
+        </label>
+
+        <input
+          id="profileUsername"
+          type="text"
+          placeholder="Enter your username"
+          disabled>
+      </div>
+
+      <div class="profile-field">
+        <label>
+          📧 Email
+        </label>
+
+        <div
+          id="profileEmail"
+          class="profile-readonly">
+          —
+        </div>
+      </div>
+
+      <div class="profile-field">
+        <label>
+          🔐 Google Account
+        </label>
+
+        <div
+          id="profileGoogleInfo"
+          class="profile-readonly">
+          —
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="profile-settings">
+
+      <button
+        id="profileSettingsBtn"
+        class="profile-setting-button"
+        type="button">
+
+        ⚙️ Profile Settings
+
+        <span>›</span>
+
+      </button>
+
+      <div
+        id="profileSettingsPanel"
+        class="profile-settings-panel"
+        hidden>
+
+        <label class="profile-setting-row">
+          <span>
+            Show profile photo
+          </span>
+
+          <input
+            id="profilePhotoSetting"
+            type="checkbox"
+            checked>
+        </label>
+
+      </div>
+
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="profile-actions">
+
+      <button
+        id="editProfileBtn"
+        type="button">
+        ✏️ Edit Profile
+      </button>
+
+      <button
+        id="saveProfileBtn"
+        type="button"
+        hidden>
+        💾 Save Changes
+      </button>
+
+      <button
+        id="cancelProfileBtn"
+        class="secondary"
+        type="button"
+        hidden>
+        Cancel
+      </button>
+
+    </div>
+
+    <!-- LOGOUT -->
+    <button
+      id="profileLogoutBtn"
+      class="profile-logout"
+      type="button">
+      🚪 Logout
+    </button>
+
+    <div
+      id="profileMessage"
+      class="auth-message">
+    </div>
+
+  </div>
+</div>
     <main id="appPanel">
       <div class="cards">
         <div class="card">

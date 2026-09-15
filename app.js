@@ -123,7 +123,477 @@ async function removeTransaction(id) {
     alert("Could not delete the transaction: " + error.message);
   }
 }
+
+/* =========================================================
+   PROFILE SYSTEM
+   ========================================================= */
+
+let profileEditMode = false;
+let profileUser = null;
+
+function profileElement(id) {
+  return document.getElementById(id);
+}
+
+function setProfileMessage(message, success = true) {
+  const el = profileElement("profileMessage");
+
+  if (!el) return;
+
+  el.textContent = message;
+
+  el.className = success
+    ? "auth-message profile-message-success"
+    : "auth-message profile-message-error";
+}
+
+function defaultProfilePhoto(user) {
+
+  if (user?.photoURL) {
+    return user.photoURL;
+  }
+
+  return "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg"
+           width="120"
+           height="120"
+           viewBox="0 0 120 120">
+
+        <circle cx="60" cy="60" r="60" fill="#e5e7eb"/>
+
+        <circle cx="60" cy="45" r="22"
+                fill="#9ca3af"/>
+
+        <path
+          d="M20 105
+             C25 78 42 68 60 68
+             C78 68 95 78 100 105Z"
+          fill="#9ca3af"/>
+
+      </svg>
+    `);
+}
+
+async function loadProfile(user) {
+
+  if (!user) return;
+
+  profileUser = user;
+
+  const nameInput = profileElement("profileName");
+  const usernameInput = profileElement("profileUsername");
+  const email = profileElement("profileEmail");
+  const photo = profileElement("profilePhoto");
+  const displayName = profileElement("profileDisplayName");
+  const provider = profileElement("profileProvider");
+  const googleInfo = profileElement("profileGoogleInfo");
+
+  const profileRef = doc(
+    db,
+    "users",
+    user.uid,
+    "profile",
+    "information"
+  );
+
+  let profileData = {};
+
+  try {
+
+    const snapshot = await getDoc(profileRef);
+
+    if (snapshot.exists()) {
+      profileData = snapshot.data();
+    }
+
+  } catch (error) {
+
+    console.error("Profile load error:", error);
+
+  }
+
+  const name =
+    profileData.name ||
+    user.displayName ||
+    "User";
+
+  const username =
+    profileData.username ||
+    "";
+
+  if (nameInput) {
+    nameInput.value = name;
+  }
+
+  if (usernameInput) {
+    usernameInput.value = username;
+  }
+
+  if (email) {
+    email.textContent = user.email || "—";
+  }
+
+  if (displayName) {
+    displayName.textContent = name;
+  }
+
+  if (photo) {
+    photo.src = defaultProfilePhoto(user);
+  }
+
+  const googleProviderData =
+    user.providerData?.find(
+      p => p.providerId === "google.com"
+    );
+
+  if (googleProviderData) {
+
+    if (provider) {
+      provider.textContent = "Google Account";
+    }
+
+    if (googleInfo) {
+      googleInfo.textContent =
+        googleProviderData.email ||
+        user.email ||
+        "Google account connected";
+    }
+
+  } else {
+
+    if (provider) {
+      provider.textContent = "Firebase Account";
+    }
+
+    if (googleInfo) {
+      googleInfo.textContent =
+        "Google account not connected";
+    }
+  }
+
+  setProfileEditMode(false);
+}
+
+function setProfileEditMode(enabled) {
+
+  profileEditMode = enabled;
+
+  const nameInput = profileElement("profileName");
+  const usernameInput = profileElement("profileUsername");
+
+  const editButton = profileElement("editProfileBtn");
+  const saveButton = profileElement("saveProfileBtn");
+  const cancelButton = profileElement("cancelProfileBtn");
+
+  if (nameInput) {
+    nameInput.disabled = !enabled;
+  }
+
+  if (usernameInput) {
+    usernameInput.disabled = !enabled;
+  }
+
+  if (editButton) {
+    editButton.hidden = enabled;
+  }
+
+  if (saveButton) {
+    saveButton.hidden = !enabled;
+  }
+
+  if (cancelButton) {
+    cancelButton.hidden = !enabled;
+  }
+
+  if (enabled) {
+    nameInput?.focus();
+  }
+}
+
+async function saveProfile() {
+
+  if (!profileUser) {
+    setProfileMessage(
+      "Please sign in first.",
+      false
+    );
+    return;
+  }
+
+  const name =
+    profileElement("profileName")?.value.trim() || "";
+
+  const username =
+    profileElement("profileUsername")?.value.trim() || "";
+
+  if (!name) {
+
+    setProfileMessage(
+      "Please enter your name.",
+      false
+    );
+
+    profileElement("profileName")?.focus();
+
+    return;
+  }
+
+  if (!username) {
+
+    setProfileMessage(
+      "Please enter a username.",
+      false
+    );
+
+    profileElement("profileUsername")?.focus();
+
+    return;
+  }
+
+  const saveButton =
+    profileElement("saveProfileBtn");
+
+  const oldText =
+    saveButton?.textContent;
+
+  try {
+
+    if (saveButton) {
+      saveButton.disabled = true;
+      saveButton.textContent = "Saving...";
+    }
+
+    /* Update Firebase Authentication name */
+    await updateProfile(
+      profileUser,
+      {
+        displayName: name
+      }
+    );
+
+    /* Save profile information to Firestore */
+    await setDoc(
+      doc(
+        db,
+        "users",
+        profileUser.uid,
+        "profile",
+        "information"
+      ),
+      {
+        name,
+        username,
+        email: profileUser.email || "",
+        photoURL: profileUser.photoURL || "",
+        provider: "google.com",
+        updatedAt: Date.now()
+      },
+      {
+        merge: true
+      }
+    );
+
+    const displayName =
+      profileElement("profileDisplayName");
+
+    if (displayName) {
+      displayName.textContent = name;
+    }
+
+    setProfileMessage(
+      "Profile saved successfully.",
+      true
+    );
+
+    setProfileEditMode(false);
+
+  } catch (error) {
+
+    console.error(
+      "Save profile error:",
+      error
+    );
+
+    setProfileMessage(
+      "Could not save profile: " +
+      (error?.message || error),
+      false
+    );
+
+  } finally {
+
+    if (saveButton) {
+      saveButton.disabled = false;
+      saveButton.textContent =
+        oldText || "💾 Save Changes";
+    }
+
+  }
+}
+
+function openProfile() {
+
+  if (!user) {
+
+    alert(
+      "Please sign in with Google first."
+    );
+
+    return;
+  }
+
+  const modal =
+    profileElement("profileModal");
+
+  if (!modal) return;
+
+  modal.classList.remove("hidden");
+
+  setProfileMessage("");
+
+  loadProfile(user);
+}
+
+function closeProfile() {
+
+  const modal =
+    profileElement("profileModal");
+
+  if (!modal) return;
+
+  modal.classList.add("hidden");
+
+  setProfileEditMode(false);
+
+  setProfileMessage("");
+}
+
+function setupProfileSystem() {
+
+  /* Open profile */
+
+  profileElement("profileBtn")
+    ?.addEventListener(
+      "click",
+      openProfile
+    );
+
+  /* Close */
+
+  profileElement("closeProfileBtn")
+    ?.addEventListener(
+      "click",
+      closeProfile
+    );
+
+  profileElement("cancelProfileBtn")
+    ?.addEventListener(
+      "click",
+      () => {
+
+        if (user) {
+          loadProfile(user);
+        }
+
+        setProfileEditMode(false);
+        setProfileMessage("");
+
+      }
+    );
+
+  /* Edit */
+
+  profileElement("editProfileBtn")
+    ?.addEventListener(
+      "click",
+      () => {
+
+        setProfileMessage("");
+
+        setProfileEditMode(true);
+
+      }
+    );
+
+  /* Save */
+
+  profileElement("saveProfileBtn")
+    ?.addEventListener(
+      "click",
+      saveProfile
+    );
+
+  /* Logout */
+
+  profileElement("profileLogoutBtn")
+    ?.addEventListener(
+      "click",
+      async () => {
+
+        try {
+
+          await signOut(auth);
+
+          closeProfile();
+
+        } catch (error) {
+
+          console.error(
+            "Logout error:",
+            error
+          );
+
+          setProfileMessage(
+            "Logout failed: " +
+            error.message,
+            false
+          );
+
+        }
+
+      }
+    );
+
+  /* Settings */
+
+  profileElement("profileSettingsBtn")
+    ?.addEventListener(
+      "click",
+      () => {
+
+        const panel =
+          profileElement(
+            "profileSettingsPanel"
+          );
+
+        if (!panel) return;
+
+        panel.hidden = !panel.hidden;
+
+      }
+    );
+
+  /* Close when clicking outside */
+
+  profileElement("profileModal")
+    ?.addEventListener(
+      "click",
+      event => {
+
+        if (
+          event.target.id ===
+          "profileModal"
+        ) {
+          closeProfile();
+        }
+
+      }
+    );
+}
+
 async function start() {
+  setupProfileSystem();
   if ($("date")) $("date").value = today();
   $("form")?.addEventListener("submit", addTransaction);
   document.addEventListener("click", e => {
