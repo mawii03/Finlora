@@ -9208,3 +9208,273 @@ body[data-account-page="other"] #backBtn {
     min-height: 48px;
   }
 }
+
+/* =========================================================
+   PROFILE - MOBILE FRIENDLY
+   Desktop / Laptop / Tablet / Android / iPhone
+   ========================================================= */
+
+/* Tablet */
+@media (max-width: 900px) {
+
+  .profile-modal-card {
+    width: min(92vw, 500px);
+    max-height: 88vh;
+  }
+
+  .profile-photo {
+    width: 70px;
+    height: 70px;
+  }
+
+  .profile-actions {
+    gap: 10px;
+  }
+}
+
+
+/* Android / iPhone */
+@media (max-width: 600px) {
+
+  #profileModal {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .profile-modal-card {
+    width: 100%;
+    max-width: none;
+
+    max-height: 92vh;
+
+    margin: 0;
+
+    border-radius: 22px 22px 0 0;
+
+    padding: 18px;
+
+    box-sizing: border-box;
+
+    overflow-y: auto;
+
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Header */
+
+  .profile-modal-card .modal-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .profile-modal-card .modal-header h2 {
+    font-size: 20px;
+    line-height: 1.25;
+  }
+
+  .profile-modal-card .modal-subtitle {
+    font-size: 12px;
+  }
+
+  .modal-close {
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    font-size: 24px;
+  }
+
+
+  /* Profile photo */
+
+  .profile-photo-section {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 13px;
+
+    margin: 12px 0 18px;
+
+    border-radius: 15px;
+  }
+
+  .profile-photo {
+    width: 62px;
+    height: 62px;
+
+    flex-shrink: 0;
+
+    border-width: 3px;
+  }
+
+  .profile-photo-info {
+    min-width: 0;
+  }
+
+  .profile-photo-info strong {
+    font-size: 16px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .profile-photo-info span {
+    font-size: 12px;
+  }
+
+
+  /* Fields */
+
+  .profile-fields {
+    gap: 12px;
+  }
+
+  .profile-field {
+    gap: 5px;
+  }
+
+  .profile-field label {
+    font-size: 12px;
+  }
+
+  .profile-field input,
+  .profile-readonly {
+    width: 100%;
+
+    min-height: 46px;
+
+    font-size: 14px;
+
+    box-sizing: border-box;
+  }
+
+
+  /* Settings */
+
+  .profile-settings {
+    margin-top: 16px;
+  }
+
+  .profile-setting-button {
+    min-height: 46px;
+
+    padding: 10px 12px;
+
+    font-size: 13px;
+  }
+
+  .profile-settings-panel {
+    padding: 12px;
+  }
+
+  .profile-setting-row {
+    min-height: 38px;
+
+    font-size: 13px;
+  }
+
+
+  /* Buttons */
+
+  .profile-actions {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-top: 16px;
+  }
+
+  .profile-actions button {
+    width: 100%;
+
+    min-height: 46px;
+
+    font-size: 14px;
+  }
+
+  .profile-logout {
+    width: 100%;
+
+    min-height: 46px;
+
+    margin-top: 9px;
+
+    font-size: 14px;
+  }
+
+
+  /* Message */
+
+  #profileMessage {
+    text-align: center;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+
+    margin-top: 10px;
+  }
+}
+
+
+/* Small Android / iPhone */
+
+@media (max-width: 380px) {
+
+  .profile-modal-card {
+    padding: 14px;
+  }
+
+  .profile-modal-card .modal-header h2 {
+    font-size: 18px;
+  }
+
+  .profile-photo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .profile-photo-info strong {
+    font-size: 15px;
+  }
+
+  .profile-field input,
+  .profile-readonly {
+    min-height: 44px;
+
+    font-size: 13px;
+  }
+
+  .profile-actions button,
+  .profile-logout {
+    min-height: 44px;
+
+    font-size: 13px;
+  }
+}
+
+
+/* Prevent horizontal overflow on mobile */
+
+@media (max-width: 600px) {
+
+  #profileModal,
+  #profileModal * {
+    max-width: 100%;
+  }
+
+  #profileModal input {
+    max-width: 100%;
+  }
+}
